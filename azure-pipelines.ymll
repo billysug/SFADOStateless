@@ -1,0 +1,34 @@
+trigger:
+- main  # Replace with your branch name
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: 'Debug'
+  applicationPackagePath: '$(Build.ArtifactStagingDirectory)\ApplicationPackage'
+
+steps:
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '8.x'  # Match your .NET SDK version
+
+- task: VSBuild@1
+  inputs:
+    solution: '**/*.sln'
+    msbuildArgs: '/p:Configuration=$(buildConfiguration)'
+    clean: true
+    restoreNugetPackages: true
+
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: '$(System.DefaultWorkingDirectory)'
+    contents: '**\ApplicationPackageRoot\**'
+    targetFolder: '$(applicationPackagePath)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: '$(applicationPackagePath)'
+    artifactName: 'ServiceFabricAppPackage'
+    

@@ -19,7 +19,7 @@ variables:
   artifactsPipeline: SFADOStateless
   artifactsReleasePipeline: SFADOStateless
 
-  -steps:
+  steps:
     - task: UseDotNet@2
       inputs:
         packageType: "sdk"
@@ -49,20 +49,18 @@ variables:
         pathToPublish: '$(Build.SourcesDirectory)\$(artifactsPipeline)\pkg\$(BuildConfiguration)'
         artifactName: "$(artifactsPipeline)"
 
-    - deployment: Deploy
-      steps:
-        - task: DownloadBuildArtifacts@0
-          inputs:
-            buildType: "current"
-            downloadType: "single"
-            artifactName: "$(artifactsPipeline)"
-            downloadPath: "$(System.DefaultWorkingDirectory)"
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        buildType: "current"
+        downloadType: "single"
+        artifactName: "$(artifactsPipeline)"
+        downloadPath: "$(System.DefaultWorkingDirectory)"
 
-        - task: ServiceFabricDeploy@1
-          inputs:
-            connectedServiceName: "billysadosfmc"
-            action: "Deploy"
-            applicationPackagePath: "$(System.DefaultWorkingDirectory)/$(artifactsPipeline)"
-            applicationName: "fabric:/$(artifactsPipeline)"
-            applicationTypeName: "$(artifactsPipeline)"
-            applicationTypeVersion: "1.0.0"
+    - task: ServiceFabricDeploy@1
+      inputs:
+        connectedServiceName: "billysadosfmc"
+        action: "Deploy"
+        applicationPackagePath: "$(System.DefaultWorkingDirectory)/$(artifactsPipeline)"
+        applicationName: "fabric:/$(artifactsPipeline)"
+        applicationTypeName: "$(artifactsPipeline)"
+        applicationTypeVersion: "1.0.0"

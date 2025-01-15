@@ -58,9 +58,7 @@ steps:
 
 - task: ServiceFabricDeploy@1
   inputs:
-    connectedServiceName: "billysadosfmc"
-    action: "Deploy"
+    serviceConnectionName: "billysadosfmc"
     applicationPackagePath: "$(System.DefaultWorkingDirectory)/$(artifactsPipeline)"
-    applicationName: "fabric:/$(artifactsPipeline)"
-    applicationTypeName: "$(artifactsPipeline)"
-    applicationTypeVersion: "1.0.0"
+    overwriteBehavior: "SameAppTypeAndVersion"
+

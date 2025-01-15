@@ -39,7 +39,6 @@ steps:
     platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'
 
-
 - task: PublishBuildArtifacts@1
   inputs:
     pathToPublish: '$(Build.BinariesDirectory)\MyApp\$(BuildConfiguration)\pkg'

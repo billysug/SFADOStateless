@@ -61,4 +61,6 @@ steps:
     serviceConnectionName: "billysadosfmc"
     applicationPackagePath: "$(System.DefaultWorkingDirectory)/$(artifactsPipeline)"
     overwriteBehavior: "SameAppTypeAndVersion"
+    publishProfilePath: "$(System.DefaultWorkingDirectory)/PublishProfiles/Cloud.xml"
+
 

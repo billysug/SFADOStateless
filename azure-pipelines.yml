@@ -19,48 +19,48 @@ variables:
   artifactsPipeline: SFADOStateless
   artifactsReleasePipeline: SFADOStateless
 
-  steps:
-    - task: UseDotNet@2
-      inputs:
-        packageType: "sdk"
-        version: "8.x" # Match your .NET SDK version
+steps:
+- task: UseDotNet@2
+  inputs:
+    packageType: "sdk"
+    version: "8.x" # Match your .NET SDK version
 
-    - task: NuGetCommand@2
-      inputs:
-        command: "restore"
-        restoreSolution: "**/*.sln"
+- task: NuGetCommand@2
+  inputs:
+    command: "restore"
+    restoreSolution: "**/*.sln"
 
-    - task: VSBuild@1
-      inputs:
-        solution: "**/*.sln"
-        msbuildArgs: "/p:Configuration=$(buildConfiguration)"
-        clean: true
-        restoreNugetPackages: true
+- task: VSBuild@1
+  inputs:
+    solution: "**/*.sln"
+    msbuildArgs: "/p:Configuration=$(buildConfiguration)"
+    clean: true
+    restoreNugetPackages: true
 
-    - task: MSBuild@1
-      inputs:
-        solution: "**/*.sfproj"
-        msbuildArguments: '/t:Package /p:Configuration=$(BuildConfiguration) /p:OutDir=$(Build.BinariesDirectory)\'
-        platform: "$(BuildPlatform)"
-        configuration: "$(BuildConfiguration)"
+- task: MSBuild@1
+  inputs:
+    solution: "**/*.sfproj"
+    msbuildArguments: '/t:Package /p:Configuration=$(BuildConfiguration) /p:OutDir=$(Build.BinariesDirectory)\'
+    platform: "$(BuildPlatform)"
+    configuration: "$(BuildConfiguration)"
 
-    - task: PublishBuildArtifacts@1
-      inputs:
-        pathToPublish: '$(Build.SourcesDirectory)\$(artifactsPipeline)\pkg\$(BuildConfiguration)'
-        artifactName: "$(artifactsPipeline)"
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: '$(Build.SourcesDirectory)\$(artifactsPipeline)\pkg\$(BuildConfiguration)'
+    artifactName: "$(artifactsPipeline)"
 
-    - task: DownloadBuildArtifacts@0
-      inputs:
-        buildType: "current"
-        downloadType: "single"
-        artifactName: "$(artifactsPipeline)"
-        downloadPath: "$(System.DefaultWorkingDirectory)"
+- task: DownloadBuildArtifacts@0
+  inputs:
+    buildType: "current"
+    downloadType: "single"
+    artifactName: "$(artifactsPipeline)"
+    downloadPath: "$(System.DefaultWorkingDirectory)"
 
-    - task: ServiceFabricDeploy@1
-      inputs:
-        connectedServiceName: "billysadosfmc"
-        action: "Deploy"
-        applicationPackagePath: "$(System.DefaultWorkingDirectory)/$(artifactsPipeline)"
-        applicationName: "fabric:/$(artifactsPipeline)"
-        applicationTypeName: "$(artifactsPipeline)"
-        applicationTypeVersion: "1.0.0"
+- task: ServiceFabricDeploy@1
+  inputs:
+    connectedServiceName: "billysadosfmc"
+    action: "Deploy"
+    applicationPackagePath: "$(System.DefaultWorkingDirectory)/$(artifactsPipeline)"
+    applicationName: "fabric:/$(artifactsPipeline)"
+    applicationTypeName: "$(artifactsPipeline)"
+    applicationTypeVersion: "1.0.0"
